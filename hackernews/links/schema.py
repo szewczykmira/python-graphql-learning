@@ -64,14 +64,20 @@ class Mutation(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    links = graphene.List(LinkType, search=graphene.String())
+    links = graphene.List(
+        LinkType, search=graphene.String(), first=graphene.Int(), skip=graphene.Int())
     votes = graphene.List(VoteType)
 
-    def resolve_links(self, info, search=None, **kwargs):
+    def resolve_links(self, info, search=None, first=None, skip=None, **kwargs):
+        result = Link.objects.all()
         if search is not None:
-            return Link.objects.filter(
+            result = result.filter(
                 Q(url__icontains=search) | Q(description__icontains=search))
-        return Link.objects.all()
+        if skip is not None:
+            result = result[skip:]
+        if first is not None:
+            result = result[:first]
+        return result
 
     def resolve_votes(self, info, **kwargs):
         return Vote.objects.all()
