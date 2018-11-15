@@ -1,3 +1,4 @@
+from graphql import GraphQLError
 import graphene
 from graphene_django import DjangoObjectType
 
@@ -45,7 +46,7 @@ class CreateVote(graphene.Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception('User not logged in!')
+            raise GraphQLError('User not logged in!')
 
         link = Link.objects.filter(id=link_id).first()
         if not link:
