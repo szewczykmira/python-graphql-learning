@@ -29,7 +29,14 @@ class Mutation(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
+    me = graphene.Field(UserType)
     users = graphene.List(UserType)
+
+    def resolve_me(self, info):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("User not logged in")
+        return user
 
     def resolve_users(self, info):
         return get_user_model().objects.all()
