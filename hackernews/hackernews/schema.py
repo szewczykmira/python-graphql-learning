@@ -2,14 +2,12 @@ import graphene
 import graphql_jwt
 
 import links.schema
-import links.relay_schema
 import users.schema
 
 
 class Query(
     users.schema.Query,
     links.schema.Query,
-    links.relay_schema.Query,
     graphene.ObjectType):
     pass
 
